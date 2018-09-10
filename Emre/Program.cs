@@ -39,11 +39,12 @@ namespace Emre
             Headerstyle.SetFont(font1);
         }
 
+        //----1----
         public static void CreateExcel(List<string> filePaths, string outputPath)
         {
-            ISheet sheet1 = Hssfworkbook.CreateSheet("Logfile");
+            ISheet sheet1 = Hssfworkbook.CreateSheet("Backup_Data");
             sheet1.DefaultColumnWidth = 50;
-            //Header'lar için row oluşturma
+            //Header Row
             IRow hrow = sheet1.CreateRow(0);
 
             var headerList = MainClass.Headers;
@@ -51,10 +52,12 @@ namespace Emre
             SetHeaders(hrow, headerList, subHeaderList);
 
             var ortakIpler = new List<OrtakIp>();
-            // 0'da header'lar olduğundan rowCount 1 den başlar
+            // 0'da header'lar olduğundan rowCount 1 den başlattım.
             var rowCount = 1;
             var fixRowCount = 1;
             ISheet fixSheet = Hssfworkbook.CreateSheet("Check Qos");
+
+            //----1----
             fixSheet.DefaultColumnWidth = 50;
             foreach (var filePath in filePaths)
             {
@@ -87,10 +90,10 @@ namespace Emre
             ortakIpler = ortakIpler.Where(x => x.Ip != null).ToList();
             SetOrtakIp(ortakIpler.Where(x => !x.Ip.Equals("NULL", StringComparison.CurrentCultureIgnoreCase)).ToList(), outputPath);
         }
-
+        //----7----
         private static int CreateFixSheet(ISheet fixSheet, List<MainClass> mainClasses, string sysName, string outputPath, int rowCount)
         {
-            //Header'lar için row oluşturma
+            //Header'lar için row oluşturdum
             IRow hrow = fixSheet.CreateRow(0);
             string[] headers = new[] { "NE_Name", "Id", "Description" , "QOS_Profile_Name", "FIX_QOS_Description", "Check_QOS"};
             for (int i = 0; i < headers.Count(); i++)
@@ -118,7 +121,7 @@ namespace Emre
             }
             return rowCount;
         }
-
+        //----6----
         private static int SetSubClassRow(ISheet sheet1, string[] headerList, int rowCount, string sysName, SubClass subClass)
         {
             IRow subRow = sheet1.CreateRow(rowCount++);
@@ -155,7 +158,7 @@ namespace Emre
             subRow.GetCell(8).SetCellValue(subClass.Trap_Output_Resure_Rate.ToString() == string.Empty ? "NULL" : subClass.Trap_Output_Resure_Rate.ToString());
             return rowCount;
         }
-
+        //----5----
         private static int SetMainClassRow(ISheet sheet1, string[] headerList, string[] subHeaderList, int rowCount, string sysName, MainClass mainClass)
         {
             IRow row = sheet1.CreateRow(rowCount++);
@@ -250,15 +253,17 @@ namespace Emre
             }
         }
 
+        //----4----
         private static List<MainClass> CreateMainClassList(List<string> parsedString)
         {
             var mainClassStrings = GetMainClassesStrings(parsedString);
             var mainClasses = new List<MainClass>();
-            //İnterface listesindeki her interface'i alıp,bizim MAİNCLASS'a atıyor.
+            //İnterface listesindeki her interface'i alıp,bizim MAİNCLASS'a atıyorum.
             foreach (var inter in mainClassStrings)
             {
                 string[] stringSeparators = new string[] { "\r\n" };
                 var splitedItem = inter.Split(stringSeparators, StringSplitOptions.None).ToList();
+                //****
                 var mainClass = new MainClass(splitedItem);
                 mainClass.SetClassProperties();
                 mainClasses.Add(mainClass);
@@ -274,6 +279,7 @@ namespace Emre
                 //subclassı ait olduğu mainclassa ekleme kısmı
                 string[] stringSeparators = new string[] { "\r\n" };
                 var splitedItem = item.Split(stringSeparators, StringSplitOptions.None).ToList();
+                //*****
                 var subClass = new SubClass(splitedItem);
                 subClass.SetProperties();
                 mainClass.SubClasses.Add(subClass);
@@ -282,12 +288,13 @@ namespace Emre
         }
 
         //İnterface'lerin bir listesini oluşturuyor,yani interface ve Eth içerenleri alıp listesini oluşturuyor.
+        //----2----
         private static List<string> GetMainClassesStrings(List<string> parsedString)
         {
             var interfaces = parsedString.Where(x => x.StartsWith("\r\ninterface") && x.Contains("Eth")).ToList();
             return interfaces.Where(x => !(x.Split(' ').FirstOrDefault(y => y.Contains("Eth")) as string).Contains(".")).ToList();
         }
-
+        //----3----
         private static List<string> GetSubClasses(List<string> parsedString)
         {
             var interfaces = parsedString.Where(x => x.StartsWith("\r\ninterface") && x.Contains("Eth")).ToList();

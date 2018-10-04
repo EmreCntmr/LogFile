@@ -20,7 +20,7 @@ namespace Emre
             var inputFiles = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Logfile"))
                 .EnumerateFiles("*.cfg", SearchOption.AllDirectories)
                 .Select(d => d.FullName)
-                .GroupBy(x => Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(x))))
+                .GroupBy(x => Path.GetDirectoryName(Path.GetDirectoryName(x)))
                 .Select(x => x.LastOrDefault()).ToList();
             //var inputFiles = Directory.EnumerateFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), @"LOG\LOG_ASYA\bak204\10.201.107.204_3195180\20180806020514"), "*.cfg").ToList();
             //var inputFiles = Directory.EnumerateFiles(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Logfile"), "*.cfg").ToList();
